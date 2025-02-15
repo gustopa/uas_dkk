@@ -15,7 +15,6 @@ class UserController extends Controller
         $username = $request->input('username');
         $password = $request->input('password');
 
-        // ⚠️ QUERY INI RAWAN SQL INJECTION
         $user = DB::select("SELECT * FROM users WHERE name = '$username' AND password = '$password'");
 
         if (!empty($user)) {
@@ -39,15 +38,6 @@ class UserController extends Controller
             return response()->json(['message' => 'Potensi SQL Injection terdeteksi!']);
         }
 
-        // Cek juga password
-        // $command = "python3 " . storage_path('app/detect_sql_injection.py') . " \"$password\"";
-        // $ai_result = trim(shell_exec($command));
-
-        // if ($ai_result == "1") {
-        //     return response()->json(['message' => 'Potensi SQL Injection terdeteksi!']);
-        // }
-
-        // Gunakan parameterized query agar lebih aman
         $user = DB::select("SELECT * FROM users WHERE name = ? AND password = ?", [$username, $password]);
 
         if ($user) {
